@@ -80,7 +80,10 @@ org.apache.commons.pool2.impl.B">
 </ul>
 <h1 id="org-apache-commons-pool2-impl-GenericObjectPoolConfig-extends-BaseObjectPoolConfig"><a href="#org-apache-commons-pool2-impl-GenericObjectPoolConfig-extends-BaseObjectPoolConfig" class="headerlink" title="org.apache.commons.pool2.impl.GenericObjectPoolConfig extends BaseObjectPoolConfig:"></a>org.apache.commons.pool2.impl.GenericObjectPoolConfig extends BaseObjectPoolConfig:</h1><ul>
 <li><code>maxTotal</code>        默认8        最大连接数; the maximum number of objects that can be allocated by the pool (checked out to clients, or idle awaiting checkout) at a given time. When negative, there is no limit to the number of objects that can be managed by the pool at one time.</li>
-<li><p><code>maxIdle</code>        默认8        最大空闲连接数<br>&gt;<br>  最大空闲值.当经过一个高峰时间后，连接池可以慢慢将已经用不到的连接慢慢释放一部分，一直减少到maxIdle为止。<br>  空闲链接数大于maxIdle时，将进行回收<br>  maxIdle是最大的空闲连接数，这里取值为20，表示即使没有数据库连接时依然可以保持20空闲的连接，而不被清除  </p>
+<li><p><code>maxIdle</code>        默认8        最大空闲连接数</p>
+<blockquote>
+<p>  最大空闲值.当经过一个高峰时间后，连接池可以慢慢将已经用不到的连接慢慢释放一部分，一直减少到maxIdle为止。<br>  空闲链接数大于maxIdle时，将进行回收<br>  maxIdle是最大的空闲连接数，这里取值为20，表示即使没有数据库连接时依然可以保持20空闲的连接，而不被清除  </p>
+</blockquote>
 </li>
 <li><p><code>minIdle</code>        默认0        最小空闲连接数, 低于minIdle时，将创建新的链接</p>
 </li>
@@ -92,7 +95,7 @@ org.apache.commons.pool2.impl.B">
 <li><code>maxIdlePerKey</code>                        默认8</li>
 </ul>
 <h1 id="JedisPoolConfig-extends-GenericObjectPoolConfig"><a href="#JedisPoolConfig-extends-GenericObjectPoolConfig" class="headerlink" title="JedisPoolConfig extends GenericObjectPoolConfig"></a>JedisPoolConfig extends GenericObjectPoolConfig</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> redis.clients.jedis;</div><div class="line"></div><div class="line"><span class="keyword">import</span> org.apache.commons.pool2.impl.GenericObjectPoolConfig;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JedisPoolConfig</span> <span class="keyword">extends</span> <span class="title">GenericObjectPoolConfig</span> </span>&#123;</div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="title">JedisPoolConfig</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="comment">// defaults to make your life with connection pool easier :)</span></div><div class="line">    setTestWhileIdle(<span class="keyword">true</span>);</div><div class="line">    setMinEvictableIdleTimeMillis(<span class="number">60000</span>);</div><div class="line">    setTimeBetweenEvictionRunsMillis(<span class="number">30000</span>);</div><div class="line">    setNumTestsPerEvictionRun(-<span class="number">1</span>);</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="类关系图"><a href="#类关系图" class="headerlink" title="类关系图"></a>类关系图</h1><p><img src="1.png" alt=""></p>
+<h1 id="类关系图"><a href="#类关系图" class="headerlink" title="类关系图"></a>类关系图</h1><p><img src="/myfiles/1.png" alt=""></p>
 <p>部分参考: <a href="http://www.cnblogs.com/tankaixiong/p/4048167.html" target="_blank" rel="external">http://www.cnblogs.com/tankaixiong/p/4048167.html</a></p>
 
       
