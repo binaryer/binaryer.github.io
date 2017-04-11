@@ -28,7 +28,7 @@
 <body>
   <header id="header" class="inner"><div class="alignleft">
   <h1><a href="/">林春宇技术博客</a></h1>
-  <h2><a href="/"></a></h2>
+  <h2><a href="/">勤写字 善思考 爱编程 不浮躁</a></h2>
 </div>
 <nav id="main-nav" class="alignright">
   <ul>
@@ -100,47 +100,16 @@
     </header>
     <div class="entry">
       
-        <p><a href="https://github.com/binaryer/tinympi4j-master" target="_blank" rel="external">https://github.com/binaryer/tinympi4j-master</a></p>
-<p>最近复习Java多线程，对分布式计算突然有了浓厚的兴趣。顺手就写了个迷你的小框架。</p>
-<h1 id="tinympi4j-master"><a href="#tinympi4j-master" class="headerlink" title="tinympi4j-master"></a>tinympi4j-master</h1><p>a micro java offline distributed computation framework <strong>for fun, DO NOT use in production environment !</strong><br>微型java分布式离线计算框架  </p>
-<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p><code>tinympi4j-master</code>创建任务并提交到<code>tinympi4j-slave</code>执行， 执行完毕后把结果汇总到<code>tinympi4j-master</code><br><code>tinympi4j-slave</code>可动态加载执行class文件，如需增加新功能，只需在<code>tinympi4j-master</code>端新增任务类，而无需修改<code>tinympi4j-slave</code>端代码  </p>
-<p><img src="/myfiles/2.jpg" alt=""></p>
-<h2 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h2><ul>
-<li>简单直观, 没有任何学习难度</li>
-<li>slave支持多个任务并发/并行执行</li>
-<li>使用HTTP协议通信</li>
-<li>场景: 找素数/grep/wordcount/超大文件或大量小文件处理</li>
-<li>不支持复杂数据类型</li>
-<li>没有进度监控，健康监控，无容错功能</li>
-</ul>
-<h2 id="使用流程"><a href="#使用流程" class="headerlink" title="使用流程"></a>使用流程</h2><ol>
-<li><p>在多个计算节点启动 <a href="https://github.com/binaryer/tinympi4j-slave" target="_blank" rel="external">tinympi4j-slave</a><br><code>java -jar tinympi4j-slave-0.1.jar {port}</code></p>
-</li>
-<li><p>(在tinympi4j-master端) 编写任务类, 实现<code>SplitableTask</code>接口</p>
-</li>
-<li><p>(在tinympi4j-master端) 参考下面代码，把任务提交到计算节点执行</p>
-</li>
-<li><p>(在tinympi4j-master端) 等待所有计算节点执行完毕，获取结果</p>
-</li>
-</ol>
-<h2 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h2><h4 id="分布式计算10000以内的素数"><a href="#分布式计算10000以内的素数" class="headerlink" title="分布式计算10000以内的素数"></a>分布式计算10000以内的素数</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line"></div><div class="line">	<span class="comment">//启动master上的tomcat</span></div><div class="line">	<span class="keyword">final</span> <span class="keyword">int</span> masterport = <span class="number">8086</span>;</div><div class="line">	<span class="keyword">final</span> String masterurl = <span class="string">"http://192.168.1.100:"</span> + masterport;</div><div class="line">	TomcatTool.startMasterTomcat(masterport);</div><div class="line"></div><div class="line">	<span class="comment">//创建任务</span></div><div class="line">	<span class="keyword">final</span> BigTask&lt;Integer&gt; bigtask = BigTask.create(masterurl);</div><div class="line"></div><div class="line">	<span class="comment">//添加任务到两台计算节点， 请确保计算节点上的 tinympi4j-slave 已启动</span></div><div class="line">	<span class="comment">//关于计算节点: https://github.com/binaryer/tinympi4j-slave</span></div><div class="line">	bigtask.addTask2Slave(<span class="string">"http://192.168.1.101:1234"</span>, PrimeSplitedtask.class, <span class="keyword">new</span> Integer[] &#123; <span class="number">2</span>, <span class="number">5000</span> &#125;);</div><div class="line">	bigtask.addTask2Slave(<span class="string">"http://192.168.1.102:1234"</span>, PrimeSplitedtask.class, <span class="keyword">new</span> Integer[] &#123; <span class="number">5001</span>, <span class="number">10000</span> &#125;);</div><div class="line"></div><div class="line">	<span class="comment">//等待所有节点执行完毕</span></div><div class="line">	<span class="keyword">final</span> Collection&lt;Integer&gt; resultset = bigtask.executeAndWait();</div><div class="line">		</div><div class="line">	<span class="comment">//打印结果</span></div><div class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> n : resultset)&#123;</div><div class="line">		<span class="comment">//System.out.println(n);</span></div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">//创建SplitableTask的实现类</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PrimeSplitedtask</span> <span class="keyword">implements</span> <span class="title">SplitableTask</span> </span>&#123;</div><div class="line"></div><div class="line">	</div><div class="line">	<span class="meta">@Override</span></div><div class="line">	<span class="function"><span class="keyword">public</span> Serializable <span class="title">execute</span><span class="params">(Serializable[] params)</span> </span>&#123;</div><div class="line">		</div><div class="line">		<span class="keyword">final</span> <span class="keyword">int</span> fromnumber = (Integer) params[<span class="number">0</span>];</div><div class="line">		<span class="keyword">final</span> <span class="keyword">int</span> tonumber = (Integer) params[<span class="number">1</span>];</div><div class="line">		<span class="keyword">final</span> Set&lt;Integer&gt; resultset = <span class="keyword">new</span> LinkedHashSet&lt;Integer&gt;();</div><div class="line"></div><div class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = fromnumber; i &lt;= tonumber; i++) &#123;</div><div class="line">			<span class="keyword">if</span> (isprime(i))</div><div class="line">				resultset.add(i);</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">return</span> (Serializable) resultset;</div><div class="line">	&#125;</div><div class="line">	</div><div class="line">	</div><div class="line">	<span class="comment">//判断是否为素数</span></div><div class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">isprime</span><span class="params">(<span class="keyword">int</span> number)</span> </span>&#123;</div><div class="line">		<span class="keyword">int</span> n = <span class="number">2</span>;</div><div class="line">		<span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</div><div class="line">			<span class="keyword">if</span> (number % n == <span class="number">0</span> &amp;&amp; number!=n)</div><div class="line">				<span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">			n++;</div><div class="line">			<span class="keyword">if</span> (n &gt; Math.sqrt(number))</div><div class="line">				<span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="后续完善"><a href="#后续完善" class="headerlink" title="后续完善"></a>后续完善</h2><ul>
-<li>子任务进度查询</li>
-<li>slave端更多的设置选项: 如线程池大小</li>
-<li>单个子任务完成异步回调</li>
-<li>总任务完成异步回调</li>
-<li>暂停/继续/取消执行中的任务</li>
-<li>支持所有数据类型</li>
-<li>支持压缩传输</li>
-<li>支持未完成的任务回传已完成结果</li>
-<li>支持子节点故障转移</li>
-</ul>
-
+        <p>最近复习Java多线程，对分布式计算突然有了浓厚的兴趣。顺手就写了个迷你小框架。</p>
+<h1 id="tinympi4j-master"><a href="#tinympi4j-master" class="headerlink" title="tinympi4j-master"></a>tinympi4j-master</h1><p><a href="https://github.com/binaryer/tinympi4j-master">https://github.com/binaryer/tinympi4j-master</a></p>
       
     </div>
     <footer>
       
+        
+          <div class="alignleft">
+            <a href="/2017/04/05/写了个简单的java分布式离线计算框架/#more" class="more-link">Read More</a>
+          </div>
         
         
       
@@ -169,43 +138,14 @@
     <div class="entry">
       
         <p><code>commons-pool</code>是java世界很常用的对象池框架，dbcp和jedis都使用commons-pool作为其自身连接池的基础。了解其各项参数的作用，对系统性能提升有较大的帮助。<br>以下参数来自commons-pool版本: 2.4.2</p>
-<h1 id="org-apache-commons-pool2-impl-BaseObjectPoolConfig"><a href="#org-apache-commons-pool2-impl-BaseObjectPoolConfig" class="headerlink" title="org.apache.commons.pool2.impl.BaseObjectPoolConfig:"></a>org.apache.commons.pool2.impl.BaseObjectPoolConfig:</h1><ul>
-<li><code>lifo</code>        默认true        后进先出</li>
-<li><code>fairness</code>        默认false Returns whether or not the pool serves threads waiting to borrow objects fairly. True means that waiting threads are served as if waiting in a FIFO queue.     true if waiting threads are to be served by the pool in arrival order</li>
-<li><code>maxWaitMillis</code>        默认-1     获取连接时的最大等待毫秒数(如果设置为阻塞时BlockWhenExhausted),如果超时就抛异常, 小于零:阻塞不确定的时间 the maximum amount of time (in milliseconds) the borrowObject() method should block before throwing an exception when the pool is exhausted and getBlockWhenExhausted() is true. When less than 0, the borrowObject() method may block indefinitely.</li>
-<li><code>minEvictableIdleTimeMillis</code>        默认1000L * 60L * 30L        逐出连接的最小空闲时间 the minimum amount of time an object may sit idle in the pool before it is eligible for eviction by the idle object evictor (if any - see setTimeBetweenEvictionRunsMillis(long)). When non-positive, no objects will be evicted from the pool due to idle time alone.</li>
-<li><code>softMinEvictableIdleTimeMillis</code>        默认1000L * 60L * 30L        对象空闲多久后逐出, 当空闲时间&gt;该值 且 空闲连接&gt;最大空闲数 时直接逐出,不再根据MinEvictableIdleTimeMillis判断  (默认逐出策略) the minimum amount of time an object may sit idle in the pool before it is eligible for eviction by the idle object evictor (if any - see setTimeBetweenEvictionRunsMillis(long)), with the extra condition that at least minIdle object instances remain in the pool. This setting is overridden by getMinEvictableIdleTimeMillis() (that is, if getMinEvictableIdleTimeMillis() is positive, then getSoftMinEvictableIdleTimeMillis() is ignored).</li>
-<li><code>numTestsPerEvictionRun</code> 默认3        每次逐出检查时 逐出的最大数目 如果为负数就是 : 1/abs(n); the maximum number of objects to examine during each run (if any) of the idle object evictor thread. When positive, the number of tests performed for a run will be the minimum of the configured value and the number of idle instances in the pool. When negative, the number of tests performed will be ceil(getNumIdle()/ abs(getNumTestsPerEvictionRun())) which means that when the value is -n roughly one nth of the idle objects will be tested per run.</li>
-<li><code>testOnCreate</code>        默认false</li>
-<li><code>testOnBorrow</code>        默认false        在获取连接的时候检查有效性</li>
-<li><code>testOnReturn</code>        默认false</li>
-<li><code>testWhileIdle</code>        默认false        在空闲时检查有效性</li>
-<li><code>timeBetweenEvictionRunsMillis</code>    默认-1        逐出扫描的时间间隔(毫秒) 如果为负数,则不运行逐出线程 the number of milliseconds to sleep between runs of the idle object evictor thread. When non-positive, no idle object evictor thread will be run.</li>
-<li><code>evictionPolicyClassName</code>        默认org.apache.commons.pool2.impl.DefaultEvictionPolicy        设置的逐出策略类名, 默认DefaultEvictionPolicy(当连接超过最大空闲时间,或连接数超过最大空闲连接数)</li>
-<li><code>blockWhenExhausted</code>            默认true        连接耗尽时是否阻塞, false报异常,ture阻塞直到超时;     true if borrowObject() should block when the pool is exhausted</li>
-</ul>
-<h1 id="org-apache-commons-pool2-impl-GenericObjectPoolConfig-extends-BaseObjectPoolConfig"><a href="#org-apache-commons-pool2-impl-GenericObjectPoolConfig-extends-BaseObjectPoolConfig" class="headerlink" title="org.apache.commons.pool2.impl.GenericObjectPoolConfig extends BaseObjectPoolConfig:"></a>org.apache.commons.pool2.impl.GenericObjectPoolConfig extends BaseObjectPoolConfig:</h1><ul>
-<li><code>maxTotal</code>        默认8        最大连接数; the maximum number of objects that can be allocated by the pool (checked out to clients, or idle awaiting checkout) at a given time. When negative, there is no limit to the number of objects that can be managed by the pool at one time.</li>
-<li><p><code>maxIdle</code>        默认8        最大空闲连接数</p>
-<p>  最大空闲值.当经过一个高峰时间后，连接池可以慢慢将已经用不到的连接慢慢释放一部分，一直减少到maxIdle为止。<br>  空闲链接数大于maxIdle时，将进行回收<br>  maxIdle是最大的空闲连接数，这里取值为20，表示即使没有数据库连接时依然可以保持20空闲的连接，而不被清除  </p>
-</li>
-<li><p><code>minIdle</code>        默认0        最小空闲连接数, 低于minIdle时，将创建新的链接</p>
-</li>
-</ul>
-<h1 id="org-apache-commons-pool2-impl-GenericKeyedObjectPoolConfig-extends-BaseObjectPoolConfig"><a href="#org-apache-commons-pool2-impl-GenericKeyedObjectPoolConfig-extends-BaseObjectPoolConfig" class="headerlink" title="org.apache.commons.pool2.impl.GenericKeyedObjectPoolConfig extends BaseObjectPoolConfig"></a>org.apache.commons.pool2.impl.GenericKeyedObjectPoolConfig extends BaseObjectPoolConfig</h1><ul>
-<li><code>maxTotal</code>                默认-1</li>
-<li><code>maxTotalPerKey</code>                        默认8</li>
-<li><code>minIdlePerKey</code>                        默认0</li>
-<li><code>maxIdlePerKey</code>                        默认8</li>
-</ul>
-<h1 id="JedisPoolConfig-extends-GenericObjectPoolConfig"><a href="#JedisPoolConfig-extends-GenericObjectPoolConfig" class="headerlink" title="JedisPoolConfig extends GenericObjectPoolConfig"></a>JedisPoolConfig extends GenericObjectPoolConfig</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> redis.clients.jedis;</div><div class="line"></div><div class="line"><span class="keyword">import</span> org.apache.commons.pool2.impl.GenericObjectPoolConfig;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JedisPoolConfig</span> <span class="keyword">extends</span> <span class="title">GenericObjectPoolConfig</span> </span>&#123;</div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="title">JedisPoolConfig</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="comment">// defaults to make your life with connection pool easier :)</span></div><div class="line">    setTestWhileIdle(<span class="keyword">true</span>);</div><div class="line">    setMinEvictableIdleTimeMillis(<span class="number">60000</span>);</div><div class="line">    setTimeBetweenEvictionRunsMillis(<span class="number">30000</span>);</div><div class="line">    setNumTestsPerEvictionRun(-<span class="number">1</span>);</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="类关系图"><a href="#类关系图" class="headerlink" title="类关系图"></a>类关系图</h1><p><img src="/myfiles/1.png" alt=""></p>
-<p>部分参考: <a href="http://www.cnblogs.com/tankaixiong/p/4048167.html" target="_blank" rel="external">http://www.cnblogs.com/tankaixiong/p/4048167.html</a></p>
-
       
     </div>
     <footer>
       
+        
+          <div class="alignleft">
+            <a href="/2017/04/05/apache-commons-pool2参数说明/#more" class="more-link">Read More</a>
+          </div>
         
         
       
