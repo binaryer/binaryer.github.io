@@ -81,9 +81,7 @@ org.apache.commons.pool2.impl.B">
 <h1 id="org-apache-commons-pool2-impl-GenericObjectPoolConfig-extends-BaseObjectPoolConfig"><a href="#org-apache-commons-pool2-impl-GenericObjectPoolConfig-extends-BaseObjectPoolConfig" class="headerlink" title="org.apache.commons.pool2.impl.GenericObjectPoolConfig extends BaseObjectPoolConfig:"></a>org.apache.commons.pool2.impl.GenericObjectPoolConfig extends BaseObjectPoolConfig:</h1><ul>
 <li><code>maxTotal</code>        默认8        最大连接数; the maximum number of objects that can be allocated by the pool (checked out to clients, or idle awaiting checkout) at a given time. When negative, there is no limit to the number of objects that can be managed by the pool at one time.</li>
 <li><p><code>maxIdle</code>        默认8        最大空闲连接数</p>
-<blockquote>
 <p>  最大空闲值.当经过一个高峰时间后，连接池可以慢慢将已经用不到的连接慢慢释放一部分，一直减少到maxIdle为止。<br>  空闲链接数大于maxIdle时，将进行回收<br>  maxIdle是最大的空闲连接数，这里取值为20，表示即使没有数据库连接时依然可以保持20空闲的连接，而不被清除  </p>
-</blockquote>
 </li>
 <li><p><code>minIdle</code>        默认0        最小空闲连接数, 低于minIdle时，将创建新的链接</p>
 </li>
