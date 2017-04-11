@@ -7,7 +7,7 @@
   <meta name="author" content="林春宇">
   
   <meta name="description" content="commons-pool是java世界很常用的对象池框架，dbcp和jedis都使用commons-pool作为其自身连接池的基础。了解其各项参数的作用，对系统性能提升有较大的帮助。以下参数来自commons-pool版本: 2.4.2
-#org.apache.commons.pool2.impl.">
+org.apache.commons.pool2.impl.B">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -63,8 +63,7 @@
     <div class="entry">
       
         <p><code>commons-pool</code>是java世界很常用的对象池框架，dbcp和jedis都使用commons-pool作为其自身连接池的基础。了解其各项参数的作用，对系统性能提升有较大的帮助。<br>以下参数来自commons-pool版本: 2.4.2</p>
-<p>#org.apache.commons.pool2.impl.BaseObjectPoolConfig:</p>
-<ul>
+<h1 id="org-apache-commons-pool2-impl-BaseObjectPoolConfig"><a href="#org-apache-commons-pool2-impl-BaseObjectPoolConfig" class="headerlink" title="org.apache.commons.pool2.impl.BaseObjectPoolConfig:"></a>org.apache.commons.pool2.impl.BaseObjectPoolConfig:</h1><ul>
 <li><code>lifo</code>        默认true        后进先出</li>
 <li><code>fairness</code>        默认false Returns whether or not the pool serves threads waiting to borrow objects fairly. True means that waiting threads are served as if waiting in a FIFO queue.     true if waiting threads are to be served by the pool in arrival order</li>
 <li><code>maxWaitMillis</code>        默认-1     获取连接时的最大等待毫秒数(如果设置为阻塞时BlockWhenExhausted),如果超时就抛异常, 小于零:阻塞不确定的时间 the maximum amount of time (in milliseconds) the borrowObject() method should block before throwing an exception when the pool is exhausted and getBlockWhenExhausted() is true. When less than 0, the borrowObject() method may block indefinitely.</li>
@@ -79,8 +78,7 @@
 <li><code>evictionPolicyClassName</code>        默认org.apache.commons.pool2.impl.DefaultEvictionPolicy        设置的逐出策略类名, 默认DefaultEvictionPolicy(当连接超过最大空闲时间,或连接数超过最大空闲连接数)</li>
 <li><code>blockWhenExhausted</code>            默认true        连接耗尽时是否阻塞, false报异常,ture阻塞直到超时;     true if borrowObject() should block when the pool is exhausted</li>
 </ul>
-<p>#org.apache.commons.pool2.impl.GenericObjectPoolConfig extends BaseObjectPoolConfig:</p>
-<ul>
+<h1 id="org-apache-commons-pool2-impl-GenericObjectPoolConfig-extends-BaseObjectPoolConfig"><a href="#org-apache-commons-pool2-impl-GenericObjectPoolConfig-extends-BaseObjectPoolConfig" class="headerlink" title="org.apache.commons.pool2.impl.GenericObjectPoolConfig extends BaseObjectPoolConfig:"></a>org.apache.commons.pool2.impl.GenericObjectPoolConfig extends BaseObjectPoolConfig:</h1><ul>
 <li><code>maxTotal</code>        默认8        最大连接数; the maximum number of objects that can be allocated by the pool (checked out to clients, or idle awaiting checkout) at a given time. When negative, there is no limit to the number of objects that can be managed by the pool at one time.</li>
 <li><p><code>maxIdle</code>        默认8        最大空闲连接数</p>
 <blockquote>
@@ -99,15 +97,14 @@
 </blockquote>
 </li>
 </ul>
-<p>#org.apache.commons.pool2.impl.GenericKeyedObjectPoolConfig extends BaseObjectPoolConfig</p>
-<ul>
+<h1 id="org-apache-commons-pool2-impl-GenericKeyedObjectPoolConfig-extends-BaseObjectPoolConfig"><a href="#org-apache-commons-pool2-impl-GenericKeyedObjectPoolConfig-extends-BaseObjectPoolConfig" class="headerlink" title="org.apache.commons.pool2.impl.GenericKeyedObjectPoolConfig extends BaseObjectPoolConfig"></a>org.apache.commons.pool2.impl.GenericKeyedObjectPoolConfig extends BaseObjectPoolConfig</h1><ul>
 <li><code>maxTotal</code>                默认-1</li>
 <li><code>maxTotalPerKey</code>                        默认8</li>
 <li><code>minIdlePerKey</code>                        默认0</li>
 <li><code>maxIdlePerKey</code>                        默认8</li>
 </ul>
-<p>#JedisPoolConfig extends GenericObjectPoolConfig<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> redis.clients.jedis;</div><div class="line"></div><div class="line"><span class="keyword">import</span> org.apache.commons.pool2.impl.GenericObjectPoolConfig;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JedisPoolConfig</span> <span class="keyword">extends</span> <span class="title">GenericObjectPoolConfig</span> </span>&#123;</div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="title">JedisPoolConfig</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="comment">// defaults to make your life with connection pool easier :)</span></div><div class="line">    setTestWhileIdle(<span class="keyword">true</span>);</div><div class="line">    setMinEvictableIdleTimeMillis(<span class="number">60000</span>);</div><div class="line">    setTimeBetweenEvictionRunsMillis(<span class="number">30000</span>);</div><div class="line">    setNumTestsPerEvictionRun(-<span class="number">1</span>);</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>#类关系图<br><img src="1.png" alt=""></p>
+<h1 id="JedisPoolConfig-extends-GenericObjectPoolConfig"><a href="#JedisPoolConfig-extends-GenericObjectPoolConfig" class="headerlink" title="JedisPoolConfig extends GenericObjectPoolConfig"></a>JedisPoolConfig extends GenericObjectPoolConfig</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> redis.clients.jedis;</div><div class="line"></div><div class="line"><span class="keyword">import</span> org.apache.commons.pool2.impl.GenericObjectPoolConfig;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JedisPoolConfig</span> <span class="keyword">extends</span> <span class="title">GenericObjectPoolConfig</span> </span>&#123;</div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="title">JedisPoolConfig</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="comment">// defaults to make your life with connection pool easier :)</span></div><div class="line">    setTestWhileIdle(<span class="keyword">true</span>);</div><div class="line">    setMinEvictableIdleTimeMillis(<span class="number">60000</span>);</div><div class="line">    setTimeBetweenEvictionRunsMillis(<span class="number">30000</span>);</div><div class="line">    setNumTestsPerEvictionRun(-<span class="number">1</span>);</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="类关系图"><a href="#类关系图" class="headerlink" title="类关系图"></a>类关系图</h1><p><img src="1.png" alt=""></p>
 <p>部分参考: <a href="http://www.cnblogs.com/tankaixiong/p/4048167.html" target="_blank" rel="external">http://www.cnblogs.com/tankaixiong/p/4048167.html</a></p>
 
       
