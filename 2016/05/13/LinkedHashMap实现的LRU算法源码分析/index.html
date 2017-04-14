@@ -40,6 +40,8 @@
     
       <li><a href="/archives">Archives</a></li>
     
+      <li><a href="/aboutme">About</a></li>
+    
   </ul>
   <div class="clearfix"></div>
 </nav>
@@ -72,7 +74,7 @@
 <p><code>afterNodeAccess</code>方法会被<code>get</code>, <code>put</code>, <code>replace</code>这些方法调用, 也就是说每次access之后, 被access的那个元素会被移动到末尾。<br>以get为例子<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> V <span class="title">get</span><span class="params">(Object key)</span> </span>&#123;</div><div class="line">    Node&lt;K,V&gt; e;</div><div class="line">    <span class="keyword">if</span> ((e = getNode(hash(key), key)) == <span class="keyword">null</span>)</div><div class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">    <span class="keyword">if</span> (accessOrder)</div><div class="line">        afterNodeAccess(e);</div><div class="line">    <span class="keyword">return</span> e.value;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <p>够简单的吧 ！</p>
 <p>上面讲到的只是LRU算法中的<code>排序</code>部分，至于元素的<code>移除</code>更简单, 只需要在put或merge时判断<br>调用链是这样的: <code>put</code>-&gt;<code>putVal</code>-&gt;<code>afterNodeInsertion</code>-&gt;<code>removeEldestEntry</code>， 我们要做的只需要override removeEldestEntry<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">boolean</span> <span class="title">removeEldestEntry</span><span class="params">(Entry&lt;Object, Object&gt; eldest)</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> (size() &gt; <span class="number">100</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>简单的数据结构加上精妙的算法，构就了实用的缓存实现。在JDK源码中，这样的经典实现还有很多。</p>
+<p>简单的数据结构加上精妙的算法，实现了简洁而实用的缓存。在JDK源码中，这样的经典实现还有很多。</p>
 
       
     </div>
@@ -92,12 +94,6 @@
   </div>
 </article>
 
-
-<section id="comment">
-  <h1 class="title">留言</h1>
-
-  
-</section>
 
 </div></div>
     <aside id="sidebar" class="alignright">
