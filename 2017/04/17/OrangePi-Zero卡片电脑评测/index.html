@@ -1,0 +1,149 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>OrangePi Zero卡片电脑评测 | 林春宇技术博客</title>
+  <meta name="author" content="林春宇">
+  
+  <meta name="description" content="OrangePi是什么? 类似RaspberriPi的国产卡片电脑。 OrangePi Zero当然相当于RaspberriPi Zero W了。其实本来想入手RaspberriPi Zero的，但$10的东西在淘宝被炒到￥280, 于心不忍。随后发现国产的OrangePi zero，价格￥59 ！ 相比RaspberriPi zero w，缺少了摄像头模块接口、蓝牙接口，多了有线网卡接口、标准USB接口，4核CPU而RPI-zero w是1核，果然是符合国情的作品，遂果断入之 ！">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="OrangePi Zero卡片电脑评测"/>
+  <meta property="og:site_name" content="林春宇技术博客"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="林春宇技术博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+  
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">林春宇技术博客</a></h1>
+  <h2><a href="/">写字 &amp; 编程 &amp; 思考</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+      <li><a href="/aboutme">About</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2017-04-17T15:42:56.000Z"><a href="/2017/04/17/OrangePi-Zero卡片电脑评测/">2017-04-17</a></time>
+      
+      
+  
+    <h1 class="title">OrangePi Zero卡片电脑评测</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>OrangePi是什么? 类似RaspberriPi的<strong>国产</strong>卡片电脑。 OrangePi Zero当然相当于RaspberriPi Zero W了。其实本来想入手RaspberriPi Zero的，但$10的东西在淘宝被炒到￥280, 于心不忍。<br>随后发现国产的OrangePi zero，价格￥59 ！ 相比RaspberriPi zero w，缺少了摄像头模块接口、蓝牙接口，多了有线网卡接口、标准USB接口，4核CPU而RPI-zero w是1核，果然是符合国情的作品，遂果断入之 ！</p>
+<p><img src="/myfiles/5.jpg" alt=""><br><a id="more"></a><br>下面是评测</p>
+<h1 id="htop"><a href="#htop" class="headerlink" title="htop"></a>htop</h1><p><img src="/myfiles/3.png" alt=""></p>
+<h1 id="uname"><a href="#uname" class="headerlink" title="uname"></a>uname</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">root@orangepizero:~<span class="comment"># uname -a</span></div><div class="line">Linux orangepizero 3.4.113-sun8i <span class="comment">#10 SMP PREEMPT Thu Feb 23 19:55:00 CET 2017 armv7l GNU/Linux</span></div></pre></td></tr></table></figure>
+<h1 id="操作系统"><a href="#操作系统" class="headerlink" title="操作系统"></a>操作系统</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">root@orangepizero:~<span class="comment"># cat /etc/issue</span></div><div class="line">Debian GNU/Linux 8 \n \l</div></pre></td></tr></table></figure>
+<p>操作系统是 <code>armlinux</code></p>
+<h1 id="磁盘IO性能-tf卡"><a href="#磁盘IO性能-tf卡" class="headerlink" title="磁盘IO性能(tf卡)"></a>磁盘IO性能(tf卡)</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">root@orangepizero:~<span class="comment"># dd if=/dev/zero of=/zerofile conv=fsync bs=1M count=1024                                                                                                </span></div><div class="line">1024+0 records <span class="keyword">in</span></div><div class="line">1024+0 records out</div><div class="line">1073741824 bytes (1.1 GB) copied, 107.43 s, 10.0 MB/s</div></pre></td></tr></table></figure>
+<h1 id="lscpu"><a href="#lscpu" class="headerlink" title="lscpu"></a>lscpu</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">root@orangepizero:~<span class="comment"># lscpu </span></div><div class="line">Architecture:          armv7l</div><div class="line">Byte Order:            Little Endian</div><div class="line">CPU(s):                4</div><div class="line">On-line CPU(s) list:   0-2</div><div class="line">Off-line CPU(s) list:  3</div><div class="line">Thread(s) per core:    1</div><div class="line">Core(s) per socket:    3</div><div class="line">Socket(s):             1</div><div class="line">CPU max MHz:           1008.0000</div><div class="line">CPU min MHz:           240.0000</div></pre></td></tr></table></figure>
+<h1 id="sysbench-cpu性能"><a href="#sysbench-cpu性能" class="headerlink" title="sysbench cpu性能"></a>sysbench cpu性能</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">root@orangepizero:~<span class="comment"># sysbench --test=cpu --cpu-max-prime=2000 --num-threads=1 run</span></div><div class="line">sysbench 0.4.12:  multi-threaded system evaluation benchmark</div><div class="line"></div><div class="line">Running the <span class="built_in">test</span> with following options:</div><div class="line">Number of threads: 1</div><div class="line"></div><div class="line">Doing CPU performance benchmark</div><div class="line"></div><div class="line">Threads started!</div><div class="line">Done.</div><div class="line"></div><div class="line">Maximum prime number checked <span class="keyword">in</span> CPU <span class="built_in">test</span>: 2000</div><div class="line"></div><div class="line"></div><div class="line">Test execution summary:</div><div class="line">    total time:                          62.2364s</div><div class="line">    total number of events:              10000</div><div class="line">    total time taken by event execution: 62.2122</div><div class="line">    per-request statistics:</div><div class="line">         min:                                  6.17ms</div><div class="line">         avg:                                  6.22ms</div><div class="line">         max:                                 14.81ms</div><div class="line">         approx.  95 percentile:               6.32ms</div><div class="line"></div><div class="line">Threads fairness:</div><div class="line">    events (avg/stddev):           10000.0000/0.00</div><div class="line">    execution time (avg/stddev):   62.2122/0.00</div></pre></td></tr></table></figure>
+<h1 id="ifconfig"><a href="#ifconfig" class="headerlink" title="ifconfig"></a>ifconfig</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">root@orangepizero:~<span class="comment"># ifconfig </span></div><div class="line">eth0      Link encap:Ethernet  HWaddr 9a:75:95:6a:92:80  </div><div class="line">          UP BROADCAST MULTICAST  MTU:1500  Metric:1</div><div class="line">          RX packets:0 errors:0 dropped:0 overruns:0 frame:0</div><div class="line">          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0</div><div class="line">          collisions:0 txqueuelen:1000 </div><div class="line">          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)</div><div class="line">          Interrupt:114 </div><div class="line"></div><div class="line">lo        Link encap:Local Loopback  </div><div class="line">          inet addr:127.0.0.1  Mask:255.0.0.0</div><div class="line">          UP LOOPBACK RUNNING  MTU:16436  Metric:1</div><div class="line">          RX packets:8 errors:0 dropped:0 overruns:0 frame:0</div><div class="line">          TX packets:8 errors:0 dropped:0 overruns:0 carrier:0</div><div class="line">          collisions:0 txqueuelen:0 </div><div class="line">          RX bytes:1104 (1.0 KiB)  TX bytes:1104 (1.0 KiB)</div><div class="line"></div><div class="line">wlan0     Link encap:Ethernet  HWaddr dc:44:6d:f3:e5:bd  </div><div class="line">          inet addr:192.168.1.103  Bcast:192.168.1.255  Mask:255.255.255.0</div><div class="line">          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1</div><div class="line">          RX packets:2261 errors:0 dropped:0 overruns:0 frame:0</div><div class="line">          TX packets:1647 errors:0 dropped:0 overruns:0 carrier:0</div><div class="line">          collisions:0 txqueuelen:1000 </div><div class="line">          RX bytes:207135 (202.2 KiB)  TX bytes:334226 (326.3 KiB)</div></pre></td></tr></table></figure>
+<h1 id="ping"><a href="#ping" class="headerlink" title="ping"></a>ping</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">root@orangepizero:~<span class="comment"># ping 192.168.1.1</span></div><div class="line">PING 192.168.1.1 (192.168.1.1) 56(84) bytes of data.</div><div class="line">64 bytes from 192.168.1.1: icmp_seq=1 ttl=64 time=8.06 ms</div><div class="line">64 bytes from 192.168.1.1: icmp_seq=2 ttl=64 time=46.5 ms</div><div class="line">64 bytes from 192.168.1.1: icmp_seq=3 ttl=64 time=44.4 ms</div><div class="line">64 bytes from 192.168.1.1: icmp_seq=4 ttl=64 time=39.3 ms</div><div class="line">64 bytes from 192.168.1.1: icmp_seq=5 ttl=64 time=58.0 ms</div><div class="line">64 bytes from 192.168.1.1: icmp_seq=6 ttl=64 time=55.7 ms</div><div class="line">64 bytes from 192.168.1.1: icmp_seq=7 ttl=64 time=53.4 ms</div><div class="line">64 bytes from 192.168.1.1: icmp_seq=8 ttl=64 time=51.6 ms</div><div class="line">^C</div><div class="line">--- 192.168.1.1 ping statistics ---</div><div class="line">8 packets transmitted, 8 received, 0% packet loss, time 7011ms</div><div class="line">rtt min/avg/max/mdev = 8.061/44.673/58.054/15.011 ms</div></pre></td></tr></table></figure>
+<h1 id="功耗"><a href="#功耗" class="headerlink" title="功耗"></a>功耗</h1><p><img src="/myfiles/4.jpg" alt=""></p>
+<p>功耗5V/300mA-600mA, 平均在400mA, 比起raspberrypi zero w据说是高出不少, <a href="http://raspi.tv/2017/how-much-power-does-pi-zero-w-use" target="_blank" rel="external">详见此处</a></p>
+<h1 id="总体评价"><a href="#总体评价" class="headerlink" title="总体评价"></a>总体评价</h1><ul>
+<li>考虑到价格，orange pi zero的各项性能指标的确已经是到极致了</li>
+<li>用来跑个人服务: sshd php git, 绰绰有余</li>
+<li>有gpio, 可以接入单片机的世界</li>
+<li>wifi似乎不稳定, 距离路由器不足2米距离, 有时候ping达到300-400ms</li>
+<li>偶尔有卡死的情况，原因不明，也许<code>watchdong</code>可以解决</li>
+</ul>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/linux/">linux</a>, <a href="/tags/物联网-物聯網/">物联网/物聯網</a>
+  </div>
+
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">标签</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/Java/">Java</a><small>3</small></li>
+  
+    <li><a href="/tags/dbcp/">dbcp</a><small>1</small></li>
+  
+    <li><a href="/tags/jedis/">jedis</a><small>1</small></li>
+  
+    <li><a href="/tags/linux/">linux</a><small>1</small></li>
+  
+    <li><a href="/tags/分布式/">分布式</a><small>1</small></li>
+  
+    <li><a href="/tags/源码-源碼/">源码/源碼</a><small>1</small></li>
+  
+    <li><a href="/tags/物联网-物聯網/">物联网/物聯網</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2011 - 2017 林春宇
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+</body>
+</html>
