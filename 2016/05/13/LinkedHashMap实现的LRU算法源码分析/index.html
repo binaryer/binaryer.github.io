@@ -6,7 +6,7 @@
   <title>LinkedHashMap实现的LRU算法源码分析 | 林春宇技术博客</title>
   <meta name="author" content="林春宇">
   
-  <meta name="description" content="我们知道，通过LinkedHashMap中accessOrder=true的构造函数，可以创建实现LRU算法Map，那在Java内部是怎样实现的呢？ 大概看了下源码(JDK8u121)，记录下。
+  <meta name="description" content="我们知道，通过LinkedHashMap中accessOrder=true的构造函数，可以创建实现LRU算法Map，那在Java内部是怎样实现的呢？ 大概看了下源码(JDK8)，记录下。
 首先从构造函数开始:">
   
   
@@ -64,7 +64,7 @@
     </header>
     <div class="entry">
       
-        <p>我们知道，通过LinkedHashMap中accessOrder=true的构造函数，可以创建实现LRU算法Map，那在Java内部是怎样实现的呢？ 大概看了下源码(JDK8u121)，记录下。</p>
+        <p>我们知道，通过LinkedHashMap中accessOrder=true的构造函数，可以创建实现LRU算法Map，那在Java内部是怎样实现的呢？ 大概看了下源码(JDK8)，记录下。</p>
 <p>首先从构造函数开始:<br><a id="more"></a><br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * The iteration ordering method for this linked hash map: &lt;tt&gt;true&lt;/tt&gt;</div><div class="line"> * for access-order, &lt;tt&gt;false&lt;/tt&gt; for insertion-order.</div><div class="line"> *</div><div class="line"> * <span class="doctag">@serial</span></div><div class="line"> */</div><div class="line"><span class="keyword">final</span> <span class="keyword">boolean</span> accessOrder;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">LinkedHashMap</span><span class="params">(<span class="keyword">int</span> initialCapacity,</span></span></div><div class="line">                     <span class="keyword">float</span> loadFactor,</div><div class="line">                     <span class="keyword">boolean</span> accessOrder) &#123;</div><div class="line">    <span class="keyword">super</span>(initialCapacity, loadFactor);</div><div class="line">    <span class="keyword">this</span>.accessOrder = accessOrder;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <p><code>accessOrder</code>字段是final的且没有初始值，只能在构造函数中赋值，也就是说实例化之后，不能再次改变<code>access-order</code>或<code>insertion-order</code></p>
 <p>通过eclipse <code>open call hierarchy</code>, 查看<code>accessOrder</code>字段被哪些方法引用，需要注意的只有1个方法: <code>java.util.LinkedHashMap.afterNodeAccess(Node&lt;K, V&gt;)</code></p>
@@ -84,7 +84,7 @@
         
   
   <div class="tags">
-    <a href="/tags/源码-源碼/">源码/源碼</a>, <a href="/tags/Java/">Java</a>
+    <a href="/tags/Java/">Java</a>, <a href="/tags/源码-源碼/">源码/源碼</a>
   </div>
 
         
