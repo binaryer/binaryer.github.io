@@ -6,7 +6,7 @@
   <title>Java链路层通信协议简单实现 | 林春宇技术博客</title>
   <meta name="author" content="林春宇">
   
-  <meta name="description" content="玩无线模块有点上瘾了，如果能实现TCP通信应该很有成就感吧，因为几年前用 tun/tap 做过小工具，想当然的以为把无线收发的数据直接传输给 tun/tap 就可以了，结果往tun write数据时一直报错Invalid argument">
+  <meta name="description" content="玩无线模块有点上瘾了，如果能实现TCP通信应该很有成就感吧，因为几年前用 tun/tap 做过小工具，想当然地以为把无线收发的数据直接传输给 tun/tap 就可以了，结果往tun write数据时一直报错Invalid argument">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -63,7 +63,7 @@
     </header>
     <div class="entry">
       
-        <p>玩无线模块有点上瘾了，如果能实现TCP通信应该很有成就感吧，因为几年前用 <code>tun/tap</code> 做过小工具，想当然的以为把无线收发的数据直接传输给 tun/tap 就可以了，结果往tun write数据时一直报错<code>Invalid argument</code><br><a id="more"></a><br>结合TCP/IP协议思考了一下，我认为往tun设备write数据要求是一个完整的ip包，但是无线模块一次只能读到1个字节, tun不认识这种格式，所以Invalid argument ！</p>
+        <p>玩无线模块有点上瘾了，如果能实现TCP通信应该很有成就感吧，因为几年前用 <code>tun/tap</code> 做过小工具，想当然地以为把无线收发的数据直接传输给 tun/tap 就可以了，结果往tun write数据时一直报错<code>Invalid argument</code><br><a id="more"></a><br>结合TCP/IP协议思考了一下，我认为往tun设备write数据要求是一个完整的ip包，但是无线模块一次只能读到1个字节, tun不认识这种格式，所以Invalid argument ！</p>
 <p>为了验证我的想法，很快就写了个有完整性校验的收包发包工具，原理是发包时在包头加上<code>MAGIC BYTES</code>，接着是<code>数据长度</code>，<code>数据</code>，最后是数据的<code>校验和长度</code>与<code>校验和</code>，接收方如果接收到MAGIC BYTES，便知道这是一个包的开头，接着根据数据长度接收完整的包，最后校验，如果校验结果与包里的校验和不一致，则认为该包在传输过程中被破坏，直接丢弃整个包。其实这和TCP/IP中的包完整性校验几乎如出一辙。</p>
 <h3 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PacketFrame</span> </span>&#123;</div><div class="line"></div><div class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">byte</span>[] MAGIC = &#123; <span class="number">5</span>, -<span class="number">3</span>, <span class="number">126</span>, <span class="number">120</span>, -<span class="number">18</span>, <span class="number">24</span>, <span class="number">92</span>, <span class="number">1</span> &#125;;	<span class="comment">//可自定义，通讯双方必须一致</span></div><div class="line"></div><div class="line">	<span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">byte</span>[] magic = <span class="keyword">new</span> <span class="keyword">byte</span>[MAGIC.length];</div><div class="line">	<span class="keyword">private</span> <span class="keyword">short</span> datalength; <span class="comment">// 数据长度</span></div><div class="line">	<span class="keyword">private</span> <span class="keyword">byte</span>[] data; <span class="comment">// 数据</span></div><div class="line">	<span class="keyword">private</span> <span class="keyword">byte</span> chksumlength; <span class="comment">// 校验和长度</span></div><div class="line">	<span class="keyword">private</span> <span class="keyword">byte</span>[] chksum; <span class="comment">// 校验和</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h3 id="发包代码"><a href="#发包代码" class="headerlink" title="发包代码"></a>发包代码</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(OutputStream out)</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line"></div><div class="line">		<span class="keyword">if</span> (data.length == <span class="number">0</span> || data.length &gt; (Short.MAX_VALUE - Short.MIN_VALUE + <span class="number">1</span>))</div><div class="line">			<span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"data length must be 1-65536, current "</span> + data.length);</div><div class="line">		<span class="keyword">if</span> (chksumlength &lt; <span class="number">2</span> || chksumlength &gt; <span class="number">16</span>)</div><div class="line">			<span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"chksumlength must be 2-16, current "</span> + chksumlength);</div><div class="line"></div><div class="line">		System.arraycopy(MAGIC, <span class="number">0</span>, magic, <span class="number">0</span>, MAGIC.length);</div><div class="line">		out.write(magic);</div><div class="line"></div><div class="line">		datalength = (<span class="keyword">short</span>) data.length;</div><div class="line">		out.write(ByteBuffer.allocate(<span class="number">2</span>).putShort(datalength).array());</div><div class="line">		out.write(data);</div><div class="line">		out.write(<span class="keyword">new</span> <span class="keyword">byte</span>[]&#123;chksumlength&#125;);</div><div class="line">		out.write(chksum = ArrayUtils.subarray(DigestUtils.md5(data), <span class="number">0</span>, chksumlength));</div><div class="line"></div><div class="line">	&#125;</div></pre></td></tr></table></figure>
@@ -80,7 +80,7 @@
         
   
   <div class="tags">
-    <a href="/tags/Java/">Java</a>, <a href="/tags/linux/">linux</a>, <a href="/tags/物联网-物聯網/">物联网/物聯網</a>
+    <a href="/tags/物联网-物聯網/">物联网/物聯網</a>, <a href="/tags/Java/">Java</a>, <a href="/tags/linux/">linux</a>
   </div>
 
         
@@ -112,7 +112,7 @@
   
     <li><a href="/tags/源码-源碼/">源码/源碼</a><small>1</small></li>
   
-    <li><a href="/tags/物联网-物聯網/">物联网/物聯網</a><small>2</small></li>
+    <li><a href="/tags/物联网-物聯網/">物联网/物聯網</a><small>3</small></li>
   
   </ul>
 </div>

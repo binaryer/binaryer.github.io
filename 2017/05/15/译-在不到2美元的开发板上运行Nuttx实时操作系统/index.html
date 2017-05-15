@@ -1,0 +1,167 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>[译]在不到2美元的开发板上运行Nuttx实时操作系统 | 林春宇技术博客</title>
+  <meta name="author" content="林春宇">
+  
+  <meta name="description" content="原文: https://acassis.wordpress.com/2016/06/12/running-nuttx-on-a-less-than-u2-00-board/
+
+几个月前我发现了一款便宜的微控制器 - STM32F103C8T6我从AliExpress上购买仅花了1.96美元收到货之后, 我实现了在板子上运行Nuttx, 并且向Mr. Greg(译者注: 应为Nuttx主要开发人员)提交了补丁，使Nuttx主线版本支持该板子
+所以现在，任何人都能轻而易举地在STM32F103C8T6上运行Nuttx了该教程将展示我是如何做到的，首先列出我们需要的物件:">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="[译]在不到2美元的开发板上运行Nuttx实时操作系统"/>
+  <meta property="og:site_name" content="林春宇技术博客"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="林春宇技术博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+  
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">林春宇技术博客</a></h1>
+  <h2><a href="/">写字 &amp; 编程 &amp; 思考</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+      <li><a href="/aboutme">About</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2017-05-15T07:32:20.000Z"><a href="/2017/05/15/译-在不到2美元的开发板上运行Nuttx实时操作系统/">2017-05-15</a></time>
+      
+      
+  
+    <h1 class="title">[译]在不到2美元的开发板上运行Nuttx实时操作系统</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>原文: <a href="https://acassis.wordpress.com/2016/06/12/running-nuttx-on-a-less-than-u2-00-board/" target="_blank" rel="external">https://acassis.wordpress.com/2016/06/12/running-nuttx-on-a-less-than-u2-00-board/</a></p>
+<hr>
+<p>几个月前我发现了一款便宜的微控制器 - STM32F103C8T6<br>我从AliExpress上购买仅花了1.96美元<br>收到货之后, 我实现了在板子上运行Nuttx, 并且向Mr. Greg(译者注: 应为Nuttx主要开发人员)提交了补丁，使Nuttx主线版本支持该板子</p>
+<p>所以现在，任何人都能轻而易举地在STM32F103C8T6上运行Nuttx了<br>该教程将展示我是如何做到的，首先列出我们需要的物件: </p>
+<a id="more"></a> 
+<ul>
+<li>STM32F103C8T6 最小开发板</li>
+<li>STLinkV2下载器</li>
+<li>支持3.3V电压的USB-串口转换器</li>
+<li>USB-MicroUSB数据线, 也就是平时给智能手机充电的那种</li>
+<li>运行Ubuntu/Debian Linux的电脑, 应该也能用Windows(Cygwin)或MacOS, 但我没试过</li>
+</ul>
+<p>第一步安装编译工具<br>1) 安装交叉编译包<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ sudo aptitude install gcc-arm-none-eabi ncurses-dev gperf flex bison libtool</div></pre></td></tr></table></figure></p>
+<p>2) 编译安装OpenOCD<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ git <span class="built_in">clone</span> http://repo.or.cz/r/openocd.git</div><div class="line">$ <span class="built_in">cd</span> openocd</div><div class="line">$ ./bootstrap</div><div class="line">$ ./configure --enable-internal-jimtcl --enable-maintainer-mode --disable-werror --disable-shared --enable-stlink --enable-jlink --enable-rlink --enable-vsllink --enable-ti-icdi --enable-remote-bitbang</div></pre></td></tr></table></figure></p>
+<p>完成后你将看到如下信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">libjaylink configuration summary:</div><div class="line"> - Package version ................ 0.1.0</div><div class="line"> - Library version ................ 0:0:0</div><div class="line"> - Installation prefix ............ /usr/local</div><div class="line"> - Building on .................... x86_64-pc-linux-gnu</div><div class="line"> - Building for ................... x86_64-pc-linux-gnu</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">OpenOCD configuration summary</div><div class="line">--------------------------------------------------</div><div class="line">MPSSE mode of FTDI based devices        yes (auto)</div><div class="line">Segger J-Link JTAG Programmer           yes</div><div class="line">ST-Link JTAG Programmer                 yes</div><div class="line">TI ICDI JTAG Programmer                 yes</div><div class="line">Keil ULINK JTAG Programmer              yes (auto)</div><div class="line">Altera USB-Blaster II Compatible        yes (auto)</div><div class="line">Versaloon-Link JTAG Programmer          yes</div><div class="line">OSBDM (JTAG only) Programmer            yes (auto)</div><div class="line">eStick/opendous JTAG Programmer         yes (auto)</div><div class="line">Andes JTAG Programmer                   yes (auto)</div><div class="line">USBProg JTAG Programmer                 yes (auto)</div><div class="line">Raisonance RLink JTAG Programmer        yes</div><div class="line">Olimex ARM-JTAG-EW Programmer           yes (auto)</div><div class="line">CMSIS-DAP Compliant Debugger            yes (auto)</div></pre></td></tr></table></figure>
+<p>编译并安装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ make</div><div class="line">$ sudo make install</div></pre></td></tr></table></figure>
+<p>下一步将下载编译Nuttx<br>1) 下载Nuttx核心和附带程序</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">$ mkdir NuttX</div><div class="line">$ cd NuttX</div><div class="line">$ git clone https://bitbucket.org/nuttx/nuttx</div><div class="line">$ git clone https://bitbucket.org/nuttx/apps</div><div class="line">$ git clone https://bitbucket.org/nuttx/tools</div></pre></td></tr></table></figure>
+<p>2) 编译Kconfig Frontend(编译NuttX需要它):<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">cd</span> tools/kconfig-frontends</div><div class="line">./configure --enable-mconf</div><div class="line">make</div><div class="line">make install</div></pre></td></tr></table></figure></p>
+<p>3) 为开发板编译NuttX:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">$ <span class="built_in">cd</span> ../..</div><div class="line">$ <span class="built_in">cd</span> nuttx/tools</div><div class="line">$ ./configure.sh stm32f103-minimum/nsh</div><div class="line">$ <span class="built_in">cd</span> ..</div><div class="line">$ make menuconfig</div></pre></td></tr></table></figure></p>
+<p>如果报错 <code>kconfig-mconf: error while loading shared libraries: libkconfig-parser-3.12.0.so: cannot open shared object file: No such file or directory</code></p>
+<p>请把 <code>/usr/local/lib</code> 追加到 <code>/etc/ld.so.conf</code>文件</p>
+<p>进入 “Build Setup” 菜单并且确认”Build Host Platform”定义为”Linux”<br>进入 “System Type” -&gt; “Toolchain Selection” 确认值为 <code>(X) Generic GNU EABI toolchain under Linux</code></p>
+<p>选择EXIT并保存</p>
+<p>现在可以编译了<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ make</div></pre></td></tr></table></figure></p>
+<p>编译完成将打印<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">make[2]: Leaving directory &apos;/tmp/NuttX/nuttx/configs/stm32f103-minimum/src&apos;</div><div class="line">LD: nuttx</div><div class="line">make[1]: Leaving directory &apos;/tmp/NuttX/nuttx/arch/arm/src&apos;</div><div class="line">CP: nuttx.bin</div></pre></td></tr></table></figure></p>
+<p>往开发板烧写nuttx.bin<br>如图所示, 将数据线和下载器连接到开发板上<br><img src="/myfiles/9.jpg" alt=""></p>
+<p>创建如下内容的配置文件openocd_stm32f1.cfg<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"># Using stlink as SWD programmer</div><div class="line">source [find interface/stlink-v2.cfg]</div><div class="line"></div><div class="line"># SWD as transport</div><div class="line">transport select hla_swd</div><div class="line"></div><div class="line"># Use STM32F103 target</div><div class="line">set WORKAREASIZE 0x4000</div><div class="line">source [find target/stm32f1x.cfg]</div></pre></td></tr></table></figure></p>
+<p>执行OpenOCD<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">$ sudo openocd <span class="_">-f</span> openocd_stm32f1.cfg</div><div class="line"></div><div class="line">Open On-Chip Debugger 0.10.0-dev-00300-g89bf96f-dirty (2016-05-20-17:42)</div><div class="line">Licensed under GNU GPL v2</div><div class="line">adapter speed: 1000 kHz</div><div class="line">adapter_nsrst_delay: 100</div><div class="line">none separate</div><div class="line">Info : Unable to match requested speed 1000 kHz, using 950 kHz</div><div class="line">Info : Unable to match requested speed 1000 kHz, using 950 kHz</div><div class="line">Info : clock speed 950 kHz</div><div class="line">Info : STLINK v2 JTAG v17 API v2 SWIM v4 VID 0x0483 PID 0x3748</div><div class="line">Info : using stlink api v2</div><div class="line">Info : Target voltage: 3.297181</div><div class="line">Info : stm32f1x.cpu: hardware has 6 breakpoints, 4 watchpoints</div></pre></td></tr></table></figure></p>
+<p>在新的终端窗口执行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">$ telnet 127.0.0.1 4444</div><div class="line"></div><div class="line">&gt; reset halt</div><div class="line"></div><div class="line">stm32f1x.cpu: target state: halted</div><div class="line">target halted due to debug-request, current mode: Thread </div><div class="line">xPSR: 0x01000000 pc: 0x080003ac msp: 0x20000730</div><div class="line"></div><div class="line">&gt; flash write_image erase nuttx.bin 0x08000000</div><div class="line"></div><div class="line">auto erase enabled</div><div class="line">device id = 0x20036410</div><div class="line">ignoring flash probed value, using configured bank size</div><div class="line">flash size = 128kbytes</div><div class="line">stm32f1x.cpu: target state: halted</div><div class="line">target halted due to breakpoint, current mode: Thread </div><div class="line">xPSR: 0x61000000 pc: 0x2000003a msp: 0x20000730</div><div class="line">wrote 40960 bytes from file nuttx.bin <span class="keyword">in</span> 2.384699s (16.774 KiB/s)</div><div class="line">&gt;</div></pre></td></tr></table></figure></p>
+<p>最后，通过USB-串口连接开发板<br><img src="/myfiles/10.jpg" alt=""></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">-------------------------------</div><div class="line">|USB/Serial | STM32F103 Board |</div><div class="line">-------------------------------</div><div class="line">|   RXD     |       A9        |</div><div class="line">|   TXD     |      A10        |</div><div class="line">|   GND     |       G         |</div><div class="line">-------------------------------</div></pre></td></tr></table></figure>
+<p>用minicom/picocom连接/dev/ttyUSBx以获取Nuttx终端, 连接参数为”115200 8n1 “<br>当按下开发板上重置按钮后，将获得nuttx终端<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">NuttShell (NSH)</div><div class="line">nsh&gt;</div></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/物联网-物聯網/">物联网/物聯網</a>
+  </div>
+
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">标签</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/Java/">Java</a><small>4</small></li>
+  
+    <li><a href="/tags/dbcp/">dbcp</a><small>1</small></li>
+  
+    <li><a href="/tags/jedis/">jedis</a><small>1</small></li>
+  
+    <li><a href="/tags/linux/">linux</a><small>2</small></li>
+  
+    <li><a href="/tags/分布式/">分布式</a><small>1</small></li>
+  
+    <li><a href="/tags/源码-源碼/">源码/源碼</a><small>1</small></li>
+  
+    <li><a href="/tags/物联网-物聯網/">物联网/物聯網</a><small>3</small></li>
+  
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2011 - 2017 林春宇
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+</body>
+</html>
